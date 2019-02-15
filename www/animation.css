@@ -1,0 +1,58 @@
+span.machinename {
+	font-family: 'Roboto', sans-serif;
+	color:#FFF;
+	font-size:18px;
+	text-shadow: 2px 2px 3px #000;
+}
+
+span.plotlabel {
+	font-family: 'Roboto', sans-serif;
+	color:#000;
+	font-size:18px;
+	#text-shadow: 2px 2px 3px #000;
+}
+
+span.plotheading {
+	font-family: 'Roboto', sans-serif;
+	color:#000;
+	font-size:20px;
+	font-weight: bold;
+	#text-shadow: 2px 2px 3px #000;
+}
+
+
+div.shoutbox {
+	font-family: 'Roboto', sans-serif;
+	color:#000;
+	font-size:18px;
+}
+
+span.logotext {
+	font-family: 'Roboto', sans-serif;
+	font-size:22px;
+	font-weight: bold;
+}
+
+span.legend {
+	font-family: 'Roboto', sans-serif;
+	font-size:22px;
+	font-weight: bold;
+	text-shadow: 1px 1px 2px #fff ;
+}
+
+canvas.snowcanvas {
+	display: block;
+}
+
+
+table#queue {
+	font-family: 'Roboto', sans-serif;
+	border-collapse:collapse;
+}
+
+th {
+	text-align:left;
+	background-color:#EEEEEE;
+	margin:0px;
+	border:0px;
+}
