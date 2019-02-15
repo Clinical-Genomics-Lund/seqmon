@@ -36,8 +36,8 @@ plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis,
  
   filter.data<-  filter.data %>% group_by(machine) %>% mutate(id = row_number())
   
-  g1<-ggplot(filter.data,aes(x=id,y=PF_readcount,col=machine,group=machine))+geom_point()+geom_line()+ylim(low=0,high=max(filter.data$PF_readcount)*1.1)+#geom_smooth(method = "lm",se = F)+
-    geom_hline(yintercept=expected_clusters,col="grey",show.legend=T)+xlab("")+
+  g1<-ggplot(filter.data,aes(x=id,y=PF_readcount,col=machine,group=machine))+geom_point()+ylim(low=0,high=max(filter.data$PF_readcount)*1.1)+#geom_smooth(method = "lm",se = F)+
+    geom_hline(yintercept=expected_clusters,col="grey",show.legend=T)+xlab("")+geom_smooth()+
     ylab("Clusters passing filter [M]")+ggtitle(FlowCell_filter) + scale_color_brewer(palette="Dark2")
     
   g1
