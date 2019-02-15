@@ -1,4 +1,5 @@
 cp illuminaseqstat.R /data/bnf/proj/seqmon
+cp cmdjob_queue.pl /data/bnf/proj/seqmon/
 Rscript /data/bnf/proj/seqmon/illuminaseqstat.R
 
 # Deploy web page
