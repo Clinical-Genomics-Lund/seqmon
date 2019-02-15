@@ -1,0 +1,778 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="animation_dev.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <script src="jquery.min.js"></script>
+  <script src="NovaSeq.running.json"></script>
+  <script src="s5.running.json"></script>
+  <script src="s5prime.running.json"></script>
+  <script src="MiniSeq.running.json"></script>
+  <script src="NextSeq1.running.json"></script>
+  <script src="NextSeq2.running.json"></script>
+  <script src="MiSeq.running.json"></script>
+  <script src="S5_qcmetrics.json"></script>
+
+  <script src="turnaround.json"></script>
+  <script src="queue.json"></script>
+
+</head>
+
+<style>
+.rotated
+{
+  -ms-transform:rotate(270deg); /* IE 9 */
+  -moz-transform:rotate(270deg); /* Firefox */
+  -webkit-transform:rotate(270deg); /* Safari and Chrome */
+  -o-transform:rotate(270deg); /* Opera */
+}
+</style>
+<body id="bod">
+<div style="font-family: 'Roboto';"></div>
+
+
+<img src="miniseq-large.png" style="position:absolute; left: 50px; top: 133px; max-width:180px;">
+<img id="miseq_img" src="miseq_front_v4.png" style="position:absolute; left: 300px; top: 127px; max-width:200px;">
+<img id="nextseq1_img" src="nextseq-large.png" style="position:absolute; left: 550px; top: 110px; max-width:220px;">
+<img src="nextseq-large.png" style="position:absolute; left: 800px; top: 110px; max-width:220px;">
+<img id="novaseq_img" src="novaseq.png" style="position:absolute; left: 1050px; top: 6px; max-width:230px;">
+
+
+<img src="s5_2.png" style="position:absolute; left: 1340px; top: 115px; max-width:170px;">
+<img src="s5_2.png" style="position:absolute; left: 1610px; top: 115px; max-width:170px;">
+
+
+<!--canvas id="canvas" width="140" height="200" style="position:absolute; left: 1277px; top:155px;"></canvas-->
+<canvas id="canvas" width="1850" height="350" style="position:absolute; left: 0px; top:0px;"></canvas>
+
+
+<span class="machinename" style="position:absolute; left: 106px; top: 250px;">MiniSeq</span>
+<span class="machinename" style="position:absolute; left: 370px; top: 250px;">MiSeq</span>
+<span class="machinename" style="position:absolute; left: 618px; top: 250px;">NextSeq 1</span>
+<span class="machinename" style="position:absolute; left: 867px; top: 250px;">NextSeq 2</span>
+<span class="machinename" style="position:absolute; left: 1125px; top: 250px;">NovaSeq</span>
+<span class="machinename" style="position:absolute; left: 1390px; top: 250px;">S5 Prime</span>
+<span class="machinename" style="position:absolute; left: 1683px; top: 250px;">S5</span>
+
+
+
+<div id="slide0">
+  <img src="workflows_per_month_TAT.png" style="position:absolute; max-width:1260px; left:20px; top:350px;" >
+
+  <div class="shoutbox" style="padding-right: 30px; position:absolute; left: 1320px; top: 335px;">
+    <a class="twitter-timeline" data-width="550" data-height="700" href="https://twitter.com/cmd_lund"></a> <script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </div>
+
+
+</div>
+
+<div id="slide1">
+  <!--canvas id="chartcanvas1" width="1320" height="670" style="position:absolute; left: 20px; top:380px;"></canvas-->
+  <div class="shoutbox" style="padding-right: 30px; position:absolute; left: 1360px; top: 355px;">
+
+    <b>Centrum för molekylär diagnostik</b><p>
+    Centrum för molekylär diagnostik (CMD) bildades i januari 2016 i syfte att stärka molekylär diagnostik baserat på den nya generationens sekvenseringsteknik (NGS). CMD utgör ett resurscentrum för de Labmedicinska verksamheterna och samverkar med Skånes Universitetssjukvård (SUS) och Medicinska Fakulteten vid Lunds Universitet i syfte att förbättra klinisk implementering, forsknings- och utvecklingsarbete inom NGS-baserad diagnostik.
+    <p>
+    NGS möjliggör snabb och kraftfull analys av DNA eller RNA och identifierar genetiska skador som är av betydelse för en rad olika sjukdomstillstånd, t.ex. vid ärftliga sjukdomar, cancer och infektionssjukdomar.
+    <br><br><br><br><br><center><img src="rs_logo.png"><br><br>
+    <span class=logotext>Centrum för molekylär diagnostik</span></center>
+  </div>
+  <!--span class="plotlabel" style="position:absolute; left: 332px; top: 353px;">Antal sekvenserade bibliotek per vecka</span-->
+  <!--span class="plotlabel" style="position:absolute; left: 940px; top: 353px;">Antal sekvenserade bibliotek per månad</span-->
+  <!--span class="plotlabel" style="position:absolute; left: 550px; top: 690px;">Antal baser genererade, ackumulativt</span-->
+
+  <img src="illumina_sequencing_output.png" style="position:absolute; max-width:1250px; left:30px; top:350px;" >
+
+</div>
+
+
+<div id="slide2">
+
+  <table id="queue" style="z-index:100; position:absolute; width:500; left:110px; top:360px;">
+  </table>
+
+  <canvas id="chartcanvas2" width="1320" height="670" style="position:absolute; left: 20px; top:380px;"></canvas>
+
+  <div class="shoutbox" style="padding-right: 30px; position:absolute; left: 1360px; top: 355px;">
+    <b>Centrum för molekylär diagnostik</b><p>
+    
+    På CMD samlas tekniska och kunskapsmässiga resurser för att möta hälso- och sjukvårdens ökade krav på utveckling för att i sin tur ge förbättrad förmåga att snabbt och precist ställa diagnos. Den detaljerade informationen gör att skräddarsydd behandling kan sättas in. För tillfället analyseras bl.a. genetiska förändringar i lungcancer, koloncancer och malignt melanom, men i framtiden kommer ett brett spektrum av NGS-analyser att erbjudas. 
+
+    <br><br><br><br><br><br><br><br><br><br><br><center><img src="rs_logo.png"><br><br>
+    <span class=logotext>Centrum för molekylär diagnostik</span></center>
+
+  </div>
+
+  <span class="plotlabel" style="position:absolute; left: 495px; top: 700px;">Kvalitetsvärden, Ion S5</span>
+  <img src="lennart_load.png" style="position:absolute; width:630px; height:auto; left:690px; top:379px;">
+  <span class="plotlabel" style="position:absolute; left: 826px; top: 365px;">CPU-belastning, beräkningsserver (Lennart)</span>
+  <span class="plotlabel rotated" style="position:absolute; left: 680px; top: 505px;">CPUs</span>
+</div>
+
+
+<script>
+
+var d = new Date();
+var month = d.getMonth() + 1;
+var date = d.getDate();
+var hour = d.getHours();
+
+console.log(month)
+console.log(date)
+console.log(hour)
+
+var rain_xvel = [Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4];
+var rain_life = [50,55,70,72,90,45,42];
+var rain_positions = [72, 329, 585, 835, 1090, 1348, 1620];
+var num_particles  = [70, 70, 210, 210, 900, 120, 120];
+
+var active_rains = [];
+var progress = {};
+
+if( MiniSeq_running == 1 ) { active_rains.push(0) }
+if( MiSeq_running == 1 ) { active_rains.push(1) }
+if( NextSeq1_running == 1 )   { active_rains.push(2) }
+if( NextSeq2_running == 1 )   { active_rains.push(3) }
+if( NovaSeq_running == 1 )   { active_rains.push(4) }
+if( s5prime_running == 1 ) { active_rains.push(5) }
+if( s5_running == 1 ) { active_rains.push(6) }
+
+
+if( typeof NextSeq2_progress != 'undefined' ) { progress['3'] = NextSeq2_progress }
+if( typeof NextSeq1_progress != 'undefined' ) { progress['2'] = NextSeq1_progress }
+if( typeof MiniSeq_progress  != 'undefined' ) { progress['0'] = MiniSeq_progress }
+
+//var before = getTime();
+var requestAnimationFrame = window.requestAnimationFrame || 
+                            window.mozRequestAnimationFrame || 
+                            window.webkitRequestAnimationFrame || 
+                            window.msRequestAnimationFrame;
+
+var num_chars = 70;
+var width = 140;
+var height = 350;
+
+var bases = ["A", "T", "G", "C"]
+var cols  = ["#00E564", "#184BE2", "#FFAE00", "#FF3500"]
+var sizes = [7, 9, 11, 13, 15,17,19,22,25];
+var fontsizes = [5,7,9,11,13,15,17,20,23];
+var alphas = [0.5,0.6, 0.7, 0.8, 0.9, 0.92, 0.94, 0.96, 1];
+
+
+var ch = [];
+
+for(var s=0; s<sizes.length; s++) {
+	ch[s] = [];
+	for(var i=0; i<4; i++) {
+		ch[s][i] = document.createElement('canvas');
+		ch[s][i].width  = sizes[s];
+		ch[s][i].height = sizes[s];
+		var ctx = ch[s][i].getContext("2d");
+		ctx.font = "bold "+fontsizes[s]+"px Arial";
+    ctx.save();
+    ctx.globalAlpha = alphas[s];
+		ctx.fillStyle = "#444";      			
+		ctx.fillText( bases[i], 3, 1+fontsizes[s] );		
+    ctx.fillStyle = cols[i];            
+    ctx.fillText( bases[i], 2, fontsizes[s] );    
+    ctx.restore();
+	}
+}
+
+var elements = [];
+var start = 0;
+for( machine in active_rains ) {
+    var ofs_x = rain_positions[active_rains[machine]];
+    var parts  = num_particles[active_rains[machine]]
+    
+    for( var i=start; i<=start+parts; i++ ) {
+        let size = Math.random()*4;
+        elements[i] = {
+          'x':width/2-5+Math.random()*10, 
+          'y':Math.random()*6+250, 
+          'ch': Math.floor(Math.random()*4), 
+          'size': Math.floor(size), 
+          'xofs': ofs_x, 
+          'xvel': rain_xvel[active_rains[machine]]-Math.random()*6+3, 
+          'yvel': 25-size*2+Math.random()*6, 
+          'age': Math.random()*15, 
+          'machine': active_rains[machine]
+        }
+    }
+    start += parts;
+}
+
+var table = "<tr><td colspan=3><b>Pågående dataanalyser</b></td></tr><tr><th>Prov</th><th>Starttid</th><th>Analys</th></tr>"
+if( "running" in queue ) {
+	for( i in queue["running"] ) {
+		samp = queue["running"][i]
+		table = table + "<tr><td>" + samp["name"] + "</td><td>" + samp["start_time"] + "</td><td>" + samp["assay"] +"</td></tr>"	
+	}
+}
+else {
+	table = table + "<tr><td colspan=3>tom</td></tr>"
+}
+
+if( "queue" in queue ) {
+	table = table + "<tr><td style='height:10px'></td></tr><tr><tr><td colspan=3><b>Köade analyser</b></td></tr><tr><th>Prov</th><th>Kötid</th><th>Analys</th></tr>";
+	for( i in queue["queue"] ) {
+		samp = queue["queue"][i]
+		table = table + "<tr><td>" + samp["name"] + "</td><td>" + samp["start_time"] + "</td><td>" + samp["assay"] +"</td></tr>"	
+	}
+}
+document.getElementById("queue").innerHTML = table;
+
+
+setTimeout(function() {
+ 
+    // S5 QC metrics
+    drawLineChart( "chartcanvas2", 80, 355, 280, 1050, s5_qc );
+
+    // Turnaround times
+    var labels = Object.keys(turnaround);
+    
+    //console.log(labels)
+    var times = labels.map(function(v) { return Math.round( turnaround[v] * 10) / 10; });
+    drawBarChart( "chartcanvas3", 80,0, 250, 1200, times, labels, 0, 0,18, "#ffa36a", "");
+
+
+    var labels = Object.keys(sample_counts);
+    var times = labels.map(function(v) { return Math.round( sample_counts[v] * 10) / 10; });
+    drawBarChart( "chartcanvas3", 80,340, 250, 1200, times, labels, 0, 0,18, "#7698C6", "");
+    //drawBarChart( "chartcanvas3", 80,350, 300, 1200, times, labels, 0, 0,45, "#7B3", "");
+
+}, 500);
+
+
+
+//drawBases();
+if( active_rains.length > 0 ) {
+    drawBases_all();
+//    drawSnowflakes_all();
+}
+
+
+
+
+
+function drawBases_all() {
+
+    var c = document.getElementById("canvas");
+    var ctx = c.getContext("2d");
+
+   
+    ctx.clearRect( 0,0, 1900, height );
+
+    for(var i=0; i<elements.length; i++) {
+        let size = elements[i]['size'];
+        elements[i]['y'] -= elements[i]['yvel'];
+        elements[i]['x'] += elements[i]['xvel'];
+        elements[i]['yvel'] -= 1.8;
+        elements[i]['age'] += 1 + Math.random()*0.5;
+        size_add = Math.floor( elements[i]['age'] / (rain_life[elements[i]['machine']] / 5));
+       
+        if( elements[i]['age'] > rain_life[elements[i]['machine']] ) {
+           elements[i]['size'] = Math.floor(Math.random()*4);
+           size_add = 0;
+           elements[i]['y'] = height-100-5+Math.random()*10;
+           elements[i]['x'] = width/2-5+Math.random()*10;
+           elements[i]['yvel'] = 25-elements[i]['size']*1.5+Math.random()*8;
+           elements[i]['ch'] = Math.floor(Math.random()*4)
+           elements[i]['age'] = 0;
+        } 
+        ctx.drawImage( ch[ elements[i]['size']+size_add ][ elements[i]['ch'] ], elements[i]['x'] + elements[i]['xofs'] , elements[i]['y'] );
+    }    
+
+    for( var machine in progress ) {
+      ctx.strokeStyle="#587"
+      ctx.rect( rain_positions[machine]+10,275,140,10 )
+      ctx.fillStyle = "#9dc"
+      ctx.fillRect( rain_positions[machine]+10,275,140*progress[machine],10 )
+      ctx.fillStyle = "#fff"
+      ctx.fillRect( rain_positions[machine]+10+140*progress[machine],275,10,10 )
+      ctx.stroke()
+    }
+
+
+    setTimeout(function() { requestAnimationFrame(drawBases_all) }, 40);
+}
+
+    
+
+function drawBarChart( canv, plot_x, plot_y, plot_h, plot_w, values, labels, accum, show_values, bar_w, bar_fillcolor, unit ) {
+    var charts = document.getElementById(canv);
+    var ch = charts.getContext("2d");
+    
+    var bar_linecolor = "#68D";
+   
+    var bar_space = plot_w/values.length;
+    
+    var max_val;
+    if( unit == "%" ) {
+        max_val = 100;
+    }
+    else if( accum == 1) {
+        max_val = sum(values)
+    }
+    else {
+        max_val = Math.max(...values);
+    }
+    var scale = plot_h / max_val;
+    
+    var accum_sum = 0;
+    var val = 0;
+    for( var i=0; i < values.length; i++ ) {
+        var val = values[i];
+        if( accum == 1 ) {
+            accum_sum += val;
+            val = accum_sum;
+        }
+        var bar_h = val * scale;
+        
+        accum_sum += bar_h;
+
+
+        grd = ch.createLinearGradient(plot_x+i*bar_space, plot_y+plot_h-bar_h, plot_x+i*bar_space+bar_w+9, plot_y+plot_h-bar_h+1);
+        grd.addColorStop(0.000, '#000');
+        grd.addColorStop(1.000, '#FFF');      
+
+        ch.fillStyle = grd;
+        ch.fillRect( plot_x+i*bar_space+1, plot_y+plot_h-bar_h+6, bar_w+20, bar_h)
+
+        ch.fillStyle = bar_fillcolor;
+        ch.strokeStyle = bar_linecolor;
+
+        ch.fillRect( plot_x+i*bar_space, plot_y+plot_h-bar_h, bar_w, bar_h)
+        ch.stroke();
+
+        
+        if( show_values == 1 ) {
+            ch.font="16px Roboto";
+            ch.fillStyle = "#55b"
+            var text = num_suffix( values[i] )
+            var text_w = ch.measureText(text).width;
+            var text_ofs = (bar_w-text_w)/2;
+            ch.fillText(text,plot_x+1+text_ofs+i*bar_space, plot_y+plot_h+21-Math.max(bar_h, 30));
+            ch.fillStyle = "#fff"
+            ch.fillText(text,plot_x+text_ofs+i*bar_space, plot_y+plot_h+20-Math.max(bar_h, 30));
+        }
+    }
+    ch.fillStyle = "#FFF"
+    ch.fillRect( plot_x-5, plot_y+plot_h, bar_space*values.length+20, 20)
+    ch.fillStyle = "#777"
+    ch.fillRect( plot_x-5, plot_y+plot_h, 5+bar_space*values.length, 1)
+    ch.fillRect( plot_x-5, plot_y, 1, plot_h)
+
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+
+
+    for( var i=0; i < labels.length; i++ ) {
+        if( i % Math.ceil( labels.length/30 ) == 0 ) {
+          var lab = "" + labels[i];
+          var text_w = ch.measureText(lab).width;
+          var text_ofs = (bar_w-text_w)/2;
+          ch.fillText(lab,plot_x+text_ofs+i*bar_space, plot_y+plot_h+19);
+        }
+    }
+
+    // Find appropriate step size for Y-axis ticks
+    var y_axis_interval_size = 1;
+    var i = 0;
+    while( max_val / y_axis_interval_size > 6 ) {
+        if( i % 2 == 0 ) {
+            y_axis_interval_size *= 5;
+        }
+        else {
+            y_axis_interval_size *= 2;
+        }
+        i++;
+    }
+
+    // Draw Y-axis label values
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var y=0; y <= max_val; y+=y_axis_interval_size ) {
+        var str = num_suffix(y) + unit;
+        var str_w = ch.measureText(str).width;
+        ch.fillRect( plot_x-8, plot_y+plot_h-y*scale, 3, 1)
+        ch.fillText( str, plot_x-11-str_w, plot_y+plot_h-y*scale+5)
+    }
+
+}
+
+
+
+
+function drawPolygonChart( canv, plot_x, plot_y, plot_h, plot_w, values, labels, accum, show_values ) {
+    var charts = document.getElementById(canv);
+    var ch = charts.getContext("2d");
+   
+    //var bar_space = 75;
+    var bar_space = plot_w/values.length;
+    
+    var max_val;
+    if( accum == 1) {
+        max_val = sum(values)
+    }
+    else {
+        max_val = Math.max(...values);
+    }
+    var scale = plot_h / max_val;
+    var accum_sum = 0;
+    var val = 0;
+
+        
+    ch.fillStyle = '#5D8DCF';
+    ch.beginPath();
+
+    ch.moveTo( plot_x, plot_y+plot_h )
+
+    for( var i=0; i < values.length; i++ ) {
+        var val = values[i];
+        if( accum == 1 ) {
+            accum_sum += val;
+            val = accum_sum;
+        }
+        var bar_h = val * scale;
+
+        accum_sum += bar_h;
+
+        ch.lineTo( plot_x+i*bar_space, plot_y+plot_h-bar_h )
+    }
+
+    ch.lineTo( plot_x+(values.length-1)*bar_space, plot_y+plot_h )
+    //ch.closePath();
+    ch.fill();
+    //ch.stroke();
+
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var i=0; i < labels.length; i++ ) {
+        var lab = "" + labels[i];
+        var text_w = ch.measureText(lab).width;
+        var text_ofs = text_w/2;
+        ch.fillText(lab,plot_x-text_ofs+i*bar_space, plot_y+plot_h+21);
+    }
+
+    ch.fillStyle = "#555"
+    ch.fillRect( plot_x-5, plot_y+plot_h, 15+bar_space*(values.length-1), 1)
+    ch.fillRect( plot_x-5, plot_y, 1, plot_h)
+
+    // Find appropriate step size for Y-axis ticks
+    var y_axis_interval_size = 1;
+    var i = 0;
+    while( max_val / y_axis_interval_size > 7 ) {
+        if( i % 2 == 0 ) {
+            y_axis_interval_size *= 5;
+        }
+        else {
+            y_axis_interval_size *= 2;
+        }
+        i++;
+    }
+
+    // Draw Y-axis label values
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var y=0; y <= max_val; y+=y_axis_interval_size ) {
+        var str = num_suffix(y)+"bp"
+        var str_w = ch.measureText(str).width;
+        ch.fillRect( plot_x-8, plot_y+plot_h-y*scale, 3, 1)
+        ch.fillText( str, plot_x-11-str_w, plot_y+plot_h-y*scale+5)
+    }
+
+}
+
+function drawLineChart( canv, plot_x, plot_y, plot_h, plot_w, data ) {
+
+    var charts = document.getElementById(canv);
+    var ch = charts.getContext("2d");
+   
+    var x_space = plot_w/data["run"].length;
+
+    console.log(x_space)
+
+    max_y1 = 100;
+    max_y2 = 1.3*Math.max( ...data["usable_reads"] );
+
+    var scale1 = plot_h / max_y1;
+    var scale2 = plot_h / max_y2;
+
+    ch.fillStyle = "#555"
+    var real_width = x_space*(data["run"].length-1)
+    ch.fillRect( plot_x-5, plot_y+plot_h, 15+real_width, 1)
+    ch.fillRect( plot_x-5, plot_y, 1, plot_h)
+    ch.fillRect( plot_x-5+real_width+14, plot_y, 1, plot_h)
+
+    ch.lineWidth = 2;
+
+    var label = ["Laddning (%)", "Polyklonalitet (%)", "Antal godkända sekv."]
+
+    var field = ["loading", "polyclonal", "usable_reads"]
+    var scale  = [ scale1, scale1, scale2 ]
+    var color  = [ "#2C9E7C","#DD3D5F","#EF7E42" ]
+
+    for( var o = 0; o < field.length; o++ ) {
+
+      ch.strokeStyle = color[o];
+      ch.beginPath();
+      for( var i=0; i < data["run"].length; i++ ) {
+          ch.lineTo( plot_x+i*x_space, plot_y+plot_h-data[field[o]][i] * scale[o] )
+      }
+      ch.stroke();
+      for( var i=0; i < data["run"].length; i++ ) {
+        ch.beginPath();
+        ch.arc(plot_x+i*x_space, plot_y+plot_h-data[field[o]][i] * scale[o], 4, 0, 2 * Math.PI, false);
+        ch.fillStyle = color[o];
+        ch.fill();
+      }
+
+      ch.beginPath();
+      ch.arc(plot_x+real_width+80, plot_y+plot_h/2 + o*40 - 47, 6, 0, 2 * Math.PI, false);
+      ch.fillStyle = color[o];
+      ch.fill();
+
+      ch.font="17px Roboto";
+      ch.fillText(label[o], plot_x+real_width+95, plot_y+plot_h/2 + o*40 - 41);
+    }
+
+    // Find appropriate step size for Y-axis ticks
+    var y_axis_interval_size = 1;
+    while( max_y1 / y_axis_interval_size > 9 ) {
+        y_axis_interval_size *= 5;
+    }
+    
+    // Draw Y-axis label values
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var y=0; y <= max_y1; y+=y_axis_interval_size ) {
+        var str = y+"%"
+        var str_w = ch.measureText(str).width;
+        ch.fillRect( plot_x-8, plot_y+plot_h-y*scale1, 3, 1)
+        ch.fillText( str, plot_x-11-str_w, plot_y+plot_h-y*scale1+5)
+    }
+
+
+    // RIGHT Y-axis
+    // Find appropriate step size for Y-axis ticks
+    y_axis_interval_size = 1;
+    var i = 0;
+    while( max_y2 / y_axis_interval_size > 10 ) {
+        if( i % 2 == 0 ) {
+            y_axis_interval_size *= 5;
+        }
+        else {
+            y_axis_interval_size *= 2;
+        }
+        i++;
+    }
+    console.log(y_axis_interval_size)
+    // Draw Y-axis label values
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var y=0; y <= max_y2; y+=y_axis_interval_size ) {
+        var str = num_suffix(y)+""
+        var str_w = ch.measureText(str).width;
+        ch.fillRect( plot_x-8+real_width+18, plot_y+plot_h-y*scale2, 3, 1)
+        ch.fillText( str, 17+plot_x+real_width, plot_y+plot_h-y*scale2+5)
+    }
+   
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var i=0; i < data["run"].length; i+=2 ) {
+        var lab = "" + data["run"][i];
+        var text_w = ch.measureText(lab).width;
+        var text_ofs = text_w/2;
+        ch.fillText(lab,plot_x-text_ofs+i*x_space, plot_y+plot_h+21);
+    }
+}
+
+function drawDotChart( canv, plot_x, plot_y, plot_h, plot_w, values, labels, accum, show_values, dot_bg, dot_fg, unit ) {
+    var charts = document.getElementById(canv);
+    var ch = charts.getContext("2d");
+   
+    //var bar_space = 75;
+    var bar_space = plot_w/values.length;
+    
+    var max_val;
+    if( unit == "%") {
+        max_val = 100;
+    }
+    else if( accum == 1) {
+        max_val = sum(values)
+    }
+    else {
+        max_val = Math.max(...values);
+    }
+    var scale = plot_h / max_val;
+    var accum_sum = 0;
+    var val = 0;
+
+    ch.fillStyle = "#555"
+    ch.fillRect( plot_x-5, plot_y+plot_h, 15+bar_space*(values.length-1), 1)
+    ch.fillRect( plot_x-5, plot_y, 1, plot_h)
+
+        
+    ch.fillStyle = '#5D8DCF';
+    //ch.beginPath();
+
+    var first = 1;
+    //ch.moveTo( plot_x, plot_y+plot_h )
+
+    for( var i=0; i < values.length; i++ ) {
+        var val = values[i];
+        var bar_h = val * scale;
+        ch.beginPath();
+        ch.arc(plot_x+i*bar_space, plot_y+plot_h-bar_h, 5, 0, 2 * Math.PI, false);
+        ch.fillStyle = dot_bg;
+        ch.fill();
+        ch.lineWidth = 2;
+        ch.strokeStyle = dot_fg;
+        //ch.stroke();
+    }
+
+
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var i=0; i < labels.length; i++ ) {
+        var lab = "" + labels[i];
+        var text_w = ch.measureText(lab).width;
+        var text_ofs = text_w/2;
+        ch.fillText(lab,plot_x-text_ofs+i*bar_space, plot_y+plot_h+21);
+    }
+
+    // Find appropriate step size for Y-axis ticks
+    var y_axis_interval_size = 1;
+    var i = 0;
+    while( max_val / y_axis_interval_size > 6 ) {
+        if( i % 2 == 0 ) {
+            y_axis_interval_size *= 5;
+        }
+        else {
+            y_axis_interval_size *= 2;
+        }
+        i++;
+    }
+
+    // Draw Y-axis label values
+    ch.font="14px Roboto";
+    ch.fillStyle = "#555"
+    for( var y=0; y <= max_val; y+=y_axis_interval_size ) {
+        var str = num_suffix(y)+unit;
+        var str_w = ch.measureText(str).width;
+        ch.fillRect( plot_x-8, plot_y+plot_h-y*scale, 3, 1)
+        ch.fillText( str, plot_x-11-str_w, plot_y+plot_h-y*scale+5)
+    }
+
+
+}
+
+
+
+
+function num_suffix( val ) {
+              
+    if( val / 1000000000 > 1) {
+        return ( 0.1 * Math.floor( val / 100000000 ) + " G" )
+    }
+    if( val / 1000000 >= 0.5) {
+        return ( 0.1 * Math.floor( val / 100000 ) + " M" )
+    }
+    if( val / 1000 > 1) {
+        return ( 0.1 * Math.floor( val / 100 ) + " K" )
+    }
+    return val+" ";
+}
+
+function sum( arr)  {
+    var sum = 0;
+    for( v in arr) {
+        sum+=arr[v];
+    }
+    return sum;
+}
+
+
+function drawBases() {
+
+    var c = document.getElementById("canvas");
+    var ctx = c.getContext("2d");
+    
+    if( perc_complete < 1 )
+    perc_complete += 0.001;
+
+    ctx.clearRect( 0,0, width, height );
+
+    for(var i=0; i<=num_chars; i++) {
+    var level = Math.floor(elements[i]['y'] / 15)
+        elements[i]['y']+= 1+Math.random()* level + ( elements[i]['size'] * level/4);
+    var r = Math.random();
+    if( r >= 0.5 ) {
+            if(elements[i]['x'] < (width-50) ) {
+                elements[i]['x']+=1;    
+            }
+        }
+    else {
+            if(elements[i]['x'] > 50 ) {
+                elements[i]['x']-=1;
+            }
+        }
+    
+    if( elements[i]['y'] > height && perc_complete < 1) {
+           elements[i]['y'] = 0;
+           elements[i]['x'] = Math.random()*(width-10);
+        } 
+        ctx.drawImage( ch[ elements[i]['size'] ][ elements[i]['ch'] ], elements[i]['x'] , elements[i]['y'] );
+    }    
+
+    ctx.fillRect( 0.5, height-11.5, width*(perc_complete)-0.5, 11.5)
+    ctx.rect( 0.5, height-11.5, width-0.5, 11.5)
+    ctx.stroke();
+
+    requestAnimationFrame(drawBases);       
+}
+
+
+ var counter = 0,
+    divs = $('#slide0, #slide1, #slide2');
+    //divs = $('#slide1, #slide2');
+
+  function showDiv () {
+    for( machine in rain_xvel ) {
+      rain_xvel[machine] = Math.random()*6-3;
+    }
+
+    if( counter % 4 == 3 ) {
+        location.reload();
+    }
+    divs.stop()
+      .hide() // hide all divs
+      .filter(function (index) { return index == counter % 3; }) // figure out correct div to show
+      .show(0); // and show it
+
+    counter++;
+  }; // function to loop through divs and show correct div
+
+  showDiv(); // show first div    
+
+  setInterval(function () {
+    showDiv(); // show next div
+  }, 50000); // do this every 10 seconds
+
+  //setInterval(location.reload(),20000);
+
+$( "#bod" ).keypress(function() {
+  showDiv();
+});
+
+
+
+
+</script>
+
+
+
+
+
+</body></html>
