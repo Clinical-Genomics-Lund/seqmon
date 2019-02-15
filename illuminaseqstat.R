@@ -218,8 +218,14 @@ ggsave("tat.png",w=8,h=9)
 #g1<-ggplot(workflow_month,aes(x=manad,y=value,fill=År,group=ar))+geom_bar(stat="identity")+facet_wrap(~Var.2,scales="free")+
 #  xlab("")+ylab("Inkomna prover")
 
+sampleData.cmd<-sampleData[sampleData$Department == "Klinisk Genetik" | 
+                             sampleData$Department == "Klinisk Patologi" |
+                             sampleData$Department == "Sahlgrenska Klinisk Genetik" |
+                             sampleData$Department == "CMD - Diana Karpman" |
+                             sampleData$Department == "Klinisk immunologi och transfusionsmedicin" ,
+                         ]
 
-workflow_month<-reshape::melt(table(sampleData$Month2,sampleData$Workflow))
+workflow_month<-reshape::melt(table(sampleData.cmd$Month2,sampleData.cmd$Workflow))
 workflow_month$Var.1<-substr(workflow_month$Var.1,3,12)
 
 g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercept=c(50,100,150,200,250,300,350,400,450,500,550,600), linetype="dotted")+geom_bar(stat="identity")+
