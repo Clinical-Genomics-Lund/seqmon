@@ -293,21 +293,3 @@ system("scp samples_per_month_per_analysis.png pi@10.0.224.47:/home/pi/seqmon")
 system("scp tat.png pi@10.0.224.47:/home/pi/seqmon")
 system("scp workflows_per_month_TAT.png pi@10.0.224.47:/home/pi/seqmon")
 system("scp klusterdensitet.png pi@10.0.224.47:/home/pi/seqmon")
-
-# 
-# d1<-filter(sampleData,  Sys.Date()-Date <14,Progress != "Unknown",Progress != "Sequencing and Data Analysis Complete")
-# d1<-filter(d1, Tissue  != "Hud")
-# m1<-reshape::melt(table(d1$Progress,d1$Workflow))
-# 
-# ggplot(d1,aes(x=Sample,y=Progress,fill=Progress))+geom_bar(stat="identity",position = "dodge")+coord_flip()+xlab("")+theme(legend.title=element_blank(),legend.position = "none")+
-#   facet_wrap(~Workflow,scales="free_y")
-# 
-#     scale_fill_manual(values = brewer.pal("Greens",n=9)[c(3,5,7,9)])+ylab("Antal prover")+facet_wrap(~Var.2,scales="free")
-# 
-# 
-# ggplot(m1,aes(x=Var.2,y=value,fill=Var.1))+geom_bar(stat="identity")+scale_fill_manual(values = brewer.pal("Blues",n=9)[c(2,4,6,8)])
-# 
-# +coord_flip()+xlab("")+theme(legend.title=element_blank(),legend.position = "none")+
-#   scale_fill_manual(values = brewer.pal("Greens",n=9)[c(3,5,7,9)])+ylab("Antal prover")+facet_wrap(~Var.2,scales="free")
-# 
-
