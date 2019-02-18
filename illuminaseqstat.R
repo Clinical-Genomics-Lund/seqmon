@@ -11,7 +11,7 @@ manad <- factor(manad, levels=c("jan","feb","mar","apr","maj","jun","jul","aug",
 
 colorPal <- c("#7BC0F7", "#3B8AD9", "#F18226", "#FFDB69", "#61737B", "#A6B3B3", "#E24B26", brewer.pal(name = "Set1",9))
 
-plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis, show_x_axis ){
+plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis, show_x_axis, show_trendline ){
   
   # function to produce a line graph for a single machine
   # - seqstat = input data frame
@@ -19,6 +19,7 @@ plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis,
   # - expected_clusters = where to to put the gray line
   # - show_y_axis = TRUE/FALSE show the axis label
   # - show_x_axis = TRUE/FALSE show the axis label
+  # - show_trendline = TRUE/FALSE show trendline
   
   filter.data <- dplyr::filter(seqstat,FlowCell==FlowCell_filter)
   
@@ -37,7 +38,7 @@ plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis,
   filter.data<-  filter.data %>% group_by(machine) %>% mutate(id = row_number())
   
   g1<-ggplot(filter.data,aes(x=id,y=PF_readcount,col=machine,group=machine))+geom_point()+ylim(low=0,high=max(filter.data$PF_readcount)*1.1)+#geom_smooth(method = "lm",se = F)+
-    geom_hline(yintercept=expected_clusters,col="grey",show.legend=T)+xlab("")+geom_smooth()+
+    geom_hline(yintercept=expected_clusters,col="grey",show.legend=T)+xlab("")+
     ylab("Clusters passing filter [M]")+ggtitle(FlowCell_filter) + scale_color_brewer(palette="Dark2")
     
   g1
@@ -52,9 +53,17 @@ plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis,
   if(!show_y_axis){
     g1<-g1+ylab("")
   }
+  
   if(show_x_axis){
     g1<-g1+xlab("Run number")
   }
+  
+  
+  if(show_trendline){
+    g1<-g1+geom_smooth()
+  }
+  
+  
   
   return(g1)
   
@@ -167,8 +176,8 @@ seqstat[seqstat$machine=="S5"  & seqstat$PF_readcount > 10e6,"FlowCell"]<-"S5 - 
 ####################################################################
 
 
-plot_grid(plotmachine(seqstat,"MiniSeq",2.5e07,TRUE,FALSE),plotmachine(seqstat,"MiSeq",2.5e07,FALSE,FALSE), 
-          plotmachine(seqstat,"NextSeq Mid",1.3e08,TRUE,TRUE),plotmachine(seqstat,"NextSeq High",4e08,FALSE,TRUE) , nrow = 2)
+plot_grid(plotmachine(seqstat,"MiniSeq",2.5e07,TRUE,FALSE,FALSE),plotmachine(seqstat,"MiSeq",2.5e07,FALSE,FALSE,FALSE), 
+          plotmachine(seqstat,"NextSeq Mid",1.3e08,TRUE,TRUE,TRUE),plotmachine(seqstat,"NextSeq High",4e08,FALSE,TRUE,TRUE) , nrow = 2)
 
 ggsave("illumina_sequencing_output.png",width = 13.4,height = 7.24)
 
