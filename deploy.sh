@@ -1,6 +1,8 @@
 # Generate and copy plots to seqmon
 cp illuminaseqstat.R /data/bnf/proj/seqmon
 cp plotLoad.R /data/bnf/proj/seqmon
+cp cmdjob_queue.pl /data/bnf/proj/seqmon/
+
 Rscript /data/bnf/proj/seqmon/illuminaseqstat.R
 Rscript /data/bnf/proj/seqmon/plotLoad.R
 
