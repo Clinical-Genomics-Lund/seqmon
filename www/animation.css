@@ -1,8 +1,11 @@
 span.machinename {
 	font-family: 'Roboto', sans-serif;
-	color:#FFF;
+	color:#555;
 	font-size:18px;
-	text-shadow: 2px 2px 3px #000;
+	font-weight: bold;
+	background-color: #afafaf
+	display:block;
+	#text-shadow: 1px 1px 2px #000;
 }
 
 span.plotlabel {

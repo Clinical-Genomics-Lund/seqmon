@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" type="text/css" href="animation_dev.css">
+  <link rel="stylesheet" type="text/css" href="animation.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <script src="jquery.min.js"></script>
   <script src="NovaSeq.running.json"></script>
@@ -62,8 +62,6 @@
   <div class="shoutbox" style="padding-right: 30px; position:absolute; left: 1320px; top: 335px;">
     <a class="twitter-timeline" data-width="550" data-height="700" href="https://twitter.com/cmd_lund"></a> <script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
   </div>
-
-
 </div>
 
 <div id="slide1">
@@ -109,6 +107,10 @@
   <span class="plotlabel rotated" style="position:absolute; left: 680px; top: 505px;">CPUs</span>
 </div>
 
+<div id="slide3">
+  <img src="kalender.png" style="position:absolute; max-width:1460px; left:180px; top:350px;" >
+</div>
+
 
 <script>
 
@@ -117,9 +119,9 @@ var month = d.getMonth() + 1;
 var date = d.getDate();
 var hour = d.getHours();
 
-console.log(month)
-console.log(date)
-console.log(hour)
+//console.log(month)
+//console.log(date)
+//console.log(hour)
 
 var rain_xvel = [Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4,Math.random()*8-4];
 var rain_life = [50,55,70,72,90,45,42];
@@ -735,20 +737,20 @@ function drawBases() {
 
 
  var counter = 0,
-    divs = $('#slide0, #slide1, #slide2');
+    divs = $('#slide0, #slide1, #slide2, #slide3');
     //divs = $('#slide1, #slide2');
 
   function showDiv () {
     for( machine in rain_xvel ) {
       rain_xvel[machine] = Math.random()*6-3;
     }
-
-    if( counter % 4 == 3 ) {
+    console.log(counter);
+    if( counter % 5 == 4 ) {
         location.reload();
     }
     divs.stop()
-      .hide() // hide all divs
-      .filter(function (index) { return index == counter % 3; }) // figure out correct div to show
+      .hide() // hide all divs;
+      .filter(function (index) { return index == counter % 4; }) // figure out correct div to show
       .show(0); // and show it
 
     counter++;
