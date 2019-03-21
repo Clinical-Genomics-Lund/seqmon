@@ -124,6 +124,9 @@ sampleData<-sampleData[sampleData$Project    != "The_TEST_Project",]
 sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
                                                            "Myeloisk Panel - Parad"="Myeloisk Panel", 
                                                            "Myeloisk Panel - Oparad"="Myeloisk Panel",
+                                                           "Myeloisk Panel - Oparad - KLL"="Myeloisk Panel",
+                                                           "Myeloisk Panel - Oparad - MPN"="Myeloisk Panel",
+                                                           "Myeloisk Panel - Oparad - AML"="Myeloisk Panel",		
                                                            #tumörexom
                                                            "SureSelectXTHS - Paired Tumor Exome"="Övriga",
                                                            "SureSelect XTHS Clinical Exome - Tumor Paired Exome"="Övriga",
@@ -135,7 +138,7 @@ sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
                                                            ,"TruSeq Stranded mRNA - Fusion"="RNA-seq",
                                                            "AmpliSeq CancerHotspot"="AmpliSeq Cancer", 
                                                            "AmpliSeq ColonLung" = "AmpliSeq Cancer", 
-                                                           "Oncomine Focus Assay" = "AmpliSeq Cancer",
+                                                           "Oncomine Focus Assay" = "Oncomine Cancer",
                                                            "Clarigo NIPT Analys" = "NIPT",
                                                            "AmpliSeq CF"="Övriga"))
 
@@ -243,6 +246,7 @@ g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercep
 g1
 
 ggsave("workflows_per_month.png")
+
 
 
 ####################################################################
