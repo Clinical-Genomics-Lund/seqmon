@@ -140,9 +140,18 @@ sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
                                                            "AmpliSeq ColonLung" = "AmpliSeq Cancer", 
                                                            "Oncomine Focus Assay" = "Oncomine Cancer",
                                                            "Clarigo NIPT Analys" = "NIPT",
-                                                           "AmpliSeq CF"="Övriga"))
+                                                           "AmpliSeq CF"="Övriga"),
+                                   warn_missing = F)
 
-sampleData<-filter(sampleData,Workflow!="Unknown")
+
+
+sampleData[grep("Myeloisk",sampleData$Workflow),"Workflow"]<-"Myeloisk Panel"
+sampleData[grep("SWEA",sampleData$Workflow),"Workflow"]<-"BRCA"
+sampleData[grep("Liquid Biopsy",sampleData$Workflow),"Workflow"]<-"Oncomine Liquid Biopsy"
+
+
+sampleData.e<-sampleData[sampleData$Project=="SureSelectXTHS 2019" ,]
+
 
 
 #
@@ -195,14 +204,26 @@ ggsave("illumina_sequencing_output.png",width = 13.4,height = 7.24)
 #head(tatData)
 
 
-tatData$Analysis<-plyr::revalue(tatData$Analysis, c("Myeloisk Panel - Parad"="Myeloisk Panel", "Myeloisk Panel - Oparad"="Myeloisk Panel",
-                                                     "AmpliSeq CF"="Övriga",
-                                                     "SureSelectXTHS - Paired Tumor Exome"="Tumörexom","SureSelectXTHS - Unpaired Tumor Exome" = "Tumörexom",
-                                                     "SureSelectXTHS - Single Exome"="Exom","SureSelectXTHS - Trio Exome"="Exom","TruSeq Stranded mRNA"="Övriga",
-                                                     "SureSelect XTHS Clinical Exome - Tumor Paired Exome"="Tumörexom","TruSeq Stranded mRNA - Bladder"="RNA"
-                                                    ,"TruSeq Stranded mRNA - Fusion"="RNA",
-                                                     "AmpliSeq CancerHotspot"="AmpliSeq", "AmpliSeq ColonLung" = "AmpliSeq", "Oncomine Focus Assay" = "Oncomine Focus",
-                                                     "Clarigo NIPT Analys" = "NIPT"))
+tatData$Analysis<-plyr::revalue(tatData$Analysis, c(#myeloisk panel
+  "Myeloisk Panel - Parad"="Myeloisk Panel", 
+  "Myeloisk Panel - Oparad"="Myeloisk Panel",
+  "Myeloisk Panel - Oparad - KLL"="Myeloisk Panel",
+  "Myeloisk Panel - Oparad - MPN"="Myeloisk Panel",
+  "Myeloisk Panel - Oparad - AML"="Myeloisk Panel",		
+  #tumörexom
+  "SureSelectXTHS - Paired Tumor Exome"="Övriga",
+  "SureSelect XTHS Clinical Exome - Tumor Paired Exome"="Övriga",
+  "SureSelectXTHS - Unpaired Tumor Exome" = "Övriga",
+  "SureSelectXTHS - Single Exome"="Exom",
+  "SureSelectXTHS - Trio Exome"="Exom",
+  "TruSeq Stranded mRNA"="RNA-seq",
+  "TruSeq Stranded mRNA - Bladder"="RNA-seq"
+  ,"TruSeq Stranded mRNA - Fusion"="RNA-seq",
+  "AmpliSeq CancerHotspot"="AmpliSeq Cancer", 
+  "AmpliSeq ColonLung" = "AmpliSeq Cancer", 
+  "Oncomine Focus Assay" = "Oncomine Cancer",
+  "Clarigo NIPT Analys" = "NIPT",
+  "AmpliSeq CF"="Övriga"))
 
 a1<-aggregate(TAT~Week2+Analysis,tatData,mean)
 
@@ -213,6 +234,8 @@ a1[a1$Workflow=="Myeloisk Panel" & a1$TAT>15 ,"TAT"]<-NA
 tatplot<-ggplot(a1,aes(x=Week2,y=TAT,fill=Analysis))+geom_bar(stat = "identity")+scale_fill_manual(values = colorPal[c(1,3,5,7)])+
   ylab("Svarstid [dagar]")+xlab("Vecka")+  scale_x_discrete(breaks = levels(factor(a1$Week))[seq(1,300000,by=2)])+theme(legend.title=element_blank(),legend.position = "top")
 tatplot
+
+
 ggsave("tat.png",w=8,h=9)
 
 
@@ -240,7 +263,7 @@ sampleData.cmd<-sampleData[sampleData$Department == "Klinisk Genetik" |
 workflow_month<-reshape::melt(table(sampleData.cmd$Month2,sampleData.cmd$Workflow))
 workflow_month$Var.1<-substr(workflow_month$Var.1,3,12)
 
-g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercept=c(50,100,150,200,250,300,350,400,450,500,550,600), linetype="dotted")+geom_bar(stat="identity")+
+g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercept=c(50,100,150,200,250,300,350,400,450,500,550), linetype="dotted")+geom_bar(stat="identity")+
   scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")
 
 g1
@@ -256,13 +279,24 @@ ggsave("workflows_per_month.png")
 ####################################################################
 
 
+options(stringsAsFactors = F)
 workflow_month$Year<-paste0("20",substr(workflow_month$Var.1,1,2))
 workflow_month$Month<-substr(workflow_month$Var.1,4,5)
 workflow_month<-workflow_month[workflow_month$value>0,]
 
-ggplot(workflow_month,aes(x=Var.1,y=value,col=Year,group=Year))+facet_wrap(~Var.2)+geom_point()+
-  geom_hline(yintercept = c(50,100,150,200),col="lightgrey",linetype="dashed")+
-  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])
+workflow_month$Var.2<-as.character(workflow_month$Var.2)
+workflow_month[workflow_month$Var.2=="Oncomine Cancer","Var.2"]<-"AmpliSeq Cancer"
+
+workflow_month<-workflow_month[workflow_month$Var.2 == "AmpliSeq Cancer" | workflow_month$Var.2 == "Myeloisk Panel" | workflow_month$Var.2 == "NIPT" | workflow_month$Var.2 == "Exom",]
+
+
+labels <- workflow_month$Var.1
+labels[seq(0,length(labels),by=2)]<-""
+
+ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2)+
+  geom_hline(yintercept = c(50,100,150,200),col="lightgrey",linetype="dashed")+geom_bar(stat="identity")+
+  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])+
+  scale_x_discrete(labels=labels)
 
 ggsave("samples_per_month_per_analysis.png",w=16,h=8,dpi = 300)
 
