@@ -147,10 +147,9 @@ sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
 
 sampleData[grep("Myeloisk",sampleData$Workflow),"Workflow"]<-"Myeloisk Panel"
 sampleData[grep("SWEA",sampleData$Workflow),"Workflow"]<-"BRCA"
+sampleData[grep("BRCA",sampleData$Workflow),"Workflow"]<-"BRCA"
 sampleData[grep("Liquid Biopsy",sampleData$Workflow),"Workflow"]<-"Oncomine Liquid Biopsy"
 
-
-sampleData.e<-sampleData[sampleData$Project=="SureSelectXTHS 2019" ,]
 
 
 
@@ -231,8 +230,15 @@ a1 <- filter(a1,TAT <50)
 a1 <- filter(a1,Analysis !=  "Övriga")
 a1$Week2 <- substr(a1$Week2,3,8)
 a1[a1$Workflow=="Myeloisk Panel" & a1$TAT>15 ,"TAT"]<-NA
+
+
+labels <- a1$Week2
+labels[-seq(0,length(labels),by=5)]<-""
+
+
 tatplot<-ggplot(a1,aes(x=Week2,y=TAT,fill=Analysis))+geom_bar(stat = "identity")+scale_fill_manual(values = colorPal[c(1,3,5,7)])+
-  ylab("Svarstid [dagar]")+xlab("Vecka")+  scale_x_discrete(breaks = levels(factor(a1$Week))[seq(1,300000,by=2)])+theme(legend.title=element_blank(),legend.position = "top")
+  ylab("Svarstid [dagar]")+xlab("Vecka")+  theme(legend.title=element_blank(),legend.position = "top")+
+  scale_x_discrete(labels=labels)
 tatplot
 
 
@@ -293,9 +299,8 @@ workflow_month<-workflow_month[workflow_month$Var.2 == "AmpliSeq Cancer" | workf
 labels <- workflow_month$Var.1
 labels[seq(0,length(labels),by=2)]<-""
 
-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2)+
-  geom_hline(yintercept = c(50,100,150,200),col="lightgrey",linetype="dashed")+geom_bar(stat="identity")+
-  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])+
+ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2,scales="free_y")+
+  geom_bar(stat="identity")+  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])+
   scale_x_discrete(labels=labels)
 
 ggsave("samples_per_month_per_analysis.png",w=16,h=8,dpi = 300)
