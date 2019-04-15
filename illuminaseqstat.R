@@ -227,7 +227,7 @@ tatData$Analysis<-plyr::revalue(tatData$Analysis, c(#myeloisk panel
 a1<-aggregate(TAT~Week2+Analysis,tatData,mean)
 
 a1 <- filter(a1,TAT <50)
-a1 <- filter(a1,Analysis !=  "Övriga")
+a1 <- filter(a1,Analysis ==  "AmpliSeq Cancer" | Analysis ==  "Oncomine Cancer")
 a1$Week2 <- substr(a1$Week2,3,8)
 a1[a1$Workflow=="Myeloisk Panel" & a1$TAT>15 ,"TAT"]<-NA
 
