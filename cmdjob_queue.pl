@@ -2,8 +2,12 @@
 use strict;
 use Data::Dumper;
 use JSON;
+use File::Slurp;
 
 my @queue = `/data/bnf/scripts/cmd-job.pl --queue`;
+
+my @ignore = read_file(".juneignore", chomp => 1); 
+
 
 my %data;
 my $which = 0;
@@ -21,6 +25,8 @@ foreach( @queue ) {
 	my @a = split /\t/;
 	my $assay = which_assay( $a[1] );
 
+	next if ($a[0] ~~ @ignore);
+	
 	if( $which eq "r" ) {
 	    $a[7] =~ s/:\d\d//;
 	    push( @{$data{running}}, { 'name'=>$a[0], 'start_time'=>$a[7], 'assay'=>$assay } );
@@ -34,7 +40,7 @@ foreach( @queue ) {
 
 open( JSON, ">/home/bjorn/queue.json");
 print JSON "var queue=";
-print JSON to_json(\%data);
+print to_json(\%data);
 close JSON;
 
 system("scp /home/bjorn/queue.json pi\@10.0.224.47:/home/pi/seqmon");
