@@ -138,6 +138,7 @@ sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
                                                            ,"TruSeq Stranded mRNA - Fusion"="RNA-seq",
                                                            "AmpliSeq CancerHotspot"="AmpliSeq Cancer", 
                                                            "AmpliSeq ColonLung" = "AmpliSeq Cancer", 
+                                                           "Oncomine Lung Liquid Biopsy" = "Oncomine Cancer",
                                                            "Oncomine Focus Assay" = "Oncomine Cancer",
                                                            "Clarigo NIPT Analys" = "NIPT",
                                                            "AmpliSeq CF"="Övriga"),
@@ -299,11 +300,11 @@ workflow_month<-workflow_month[workflow_month$Var.2 == "AmpliSeq Cancer" | workf
 labels <- workflow_month$Var.1
 labels[seq(0,length(labels),by=2)]<-""
 
-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2,scales="free_y")+
-  geom_bar(stat="identity")+  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])+
-  scale_x_discrete(labels=labels)
+ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2,nrow = 1)+
+  geom_bar(stat="identity")+  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+
+  xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])
 
-ggsave("samples_per_month_per_analysis.png",w=16,h=8,dpi = 300)
+ggsave("samples_per_month_per_analysis.png",w=14,h=6,dpi = 300)
 
 
 
