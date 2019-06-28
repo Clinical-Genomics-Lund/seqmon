@@ -19,7 +19,8 @@ foreach( @queue ) {
     }
     elsif( $which ) {
 	my @a = split /\t/;
-	my $assay = which_assay( $a[1] );
+	my $assay = which_assay_new( $_ );
+	#my $assay = which_assay( $a[1] );
 
 	if( $which eq "r" ) {
 	    $a[7] =~ s/:\d\d//;
@@ -40,15 +41,27 @@ close JSON;
 system("scp /home/bjorn/queue.json pi\@10.0.224.47:/home/pi/seqmon");
 
 
+sub which_assay_new {
+    my $str = shift;
+    return "myeloisk panel" if $str =~ "myeloid";
+    return "exom" if $str =~ "exome";
+    return "BRCA" if $str =~ "swea";
+    return "RNA-Seq fusion" if $str =~ "rnaseq-fusion";
+    return "RNA-Seq" if $str =~ "rnaseq";
+    return "Somatiskt exom" if $str =~ "exome_tumor";
+    
+}
 
 sub which_assay {
     if( -e $_[0] ) {
 	open( SH, $_[0] );
 	while( <SH> ) {
-	    if( /\/(myeloid|exome|NIPT|exome_tumor|rnaseq)\// ) {
-		return "myeloisk panel" if $1 eq "myeloid";
+	    print $_;
+	    if( /\/(myeloid|exome|NIPT|exome_tumor|rnaseq-fusion|rnaseq)\// ) {
+		return "myeloisk panel" if $1 =~ "myeloid";
 		return "exom" if $1 =~ "exome";
 		return "SWEA" if $1 =~ "swea";
+		return "RNA-Seq fusion" if $1 =~ "rnaseq-fusion";
 		return "RNA-Seq" if $1 =~ "rnaseq";
 		return "Somatiskt exom" if $1 =~ "exome_tumor";
 	    
