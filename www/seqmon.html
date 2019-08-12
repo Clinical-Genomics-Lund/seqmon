@@ -737,7 +737,7 @@ function drawBases() {
 
 
  var counter = 0,
-    divs = $('#slide0, #slide1, #slide2, #slide3');
+    divs = $('#slide0, #slide1, #slide2');
     //divs = $('#slide1, #slide2');
 
   function showDiv () {
@@ -745,12 +745,12 @@ function drawBases() {
       rain_xvel[machine] = Math.random()*6-3;
     }
     console.log(counter);
-    if( counter % 5 == 4 ) {
+    if( counter % 4 == 3 ) {
         location.reload();
     }
     divs.stop()
       .hide() // hide all divs;
-      .filter(function (index) { return index == counter % 4; }) // figure out correct div to show
+      .filter(function (index) { return index == counter % 3; }) // figure out correct div to show
       .show(0); // and show it
 
     counter++;
