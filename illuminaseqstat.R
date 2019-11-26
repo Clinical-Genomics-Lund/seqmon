@@ -1,7 +1,7 @@
-
 library(dplyr)
 library(cowplot)
 library(RColorBrewer)
+library(ggthemes)
 
 setwd("/data/bnf/proj/seqmon/")
 
@@ -9,7 +9,7 @@ manad <- factor(c("jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","n
 manad <- factor(manad, levels=c("jan","feb","mar","apr","maj","jun","jul","aug","sep","okt","nov","dec"))
 
 
-colorPal <- c("#7BC0F7", "#3B8AD9", "#F18226", "#FFDB69", "#61737B", "#A6B3B3", "#E24B26", brewer.pal(name = "Set1",9))
+colorPal <- c("#7BC0F7", "#3B8AD9", "#F18226", "#FFDB69", "#61737B", "#A6B3B3", "#E25B26", "#EE3333", "#2FDB9F", brewer.pal(name = "Set1",9))
 
 plotmachine <- function(seqstat, FlowCell_filter, expected_clusters,show_y_axis, show_x_axis, show_trendline ){
   
@@ -115,7 +115,7 @@ sampleData$Month <- format(as.POSIXct(sampleData$Date), format = "%m-%Y")
 sampleData$Month2 <- format(as.POSIXct(sampleData$Date), format = "%Y\n%m")
 
 
-sampleData<-sampleData[sampleData$Tissue!="Benmärg",]
+
 sampleData<-sampleData[!duplicated(sampleData),]
 sampleData<-sampleData[sampleData$Classification == "Rutinprov",]
 sampleData<-sampleData[sampleData$Department != "TEST",]
@@ -126,21 +126,24 @@ sampleData$Workflow<-plyr::revalue(sampleData$Analysis,  c(#myeloisk panel
                                                            "Myeloisk Panel - Oparad"="Myeloisk Panel",
                                                            "Myeloisk Panel - Oparad - KLL"="Myeloisk Panel",
                                                            "Myeloisk Panel - Oparad - MPN"="Myeloisk Panel",
-                                                           "Myeloisk Panel - Oparad - AML"="Myeloisk Panel",		
-                                                           #tumörexom
+                                                           "Myeloisk Panel - Oparad - AML"="Myeloisk Panel",
+                                                             #tumörexom
                                                            "SureSelectXTHS - Paired Tumor Exome"="Övriga",
                                                            "SureSelect XTHS Clinical Exome - Tumor Paired Exome"="Övriga",
                                                            "SureSelectXTHS - Unpaired Tumor Exome" = "Övriga",
                                                            "SureSelectXTHS - Single Exome"="Exom",
                                                            "SureSelectXTHS - Trio Exome"="Exom",
                                                            "TruSeq Stranded mRNA"="RNA-seq",
-                                                           "TruSeq Stranded mRNA - Bladder"="RNA-seq"
-                                                           ,"TruSeq Stranded mRNA - Fusion"="RNA-seq",
+                                                           "TruSeq Stranded mRNA - Bladder"="RNA-seq",
+                                                           "TruSeq Stranded mRNA - Fusion"="RNA-seq",
                                                            "AmpliSeq CancerHotspot"="AmpliSeq Cancer", 
                                                            "AmpliSeq ColonLung" = "AmpliSeq Cancer", 
                                                            "Oncomine Lung Liquid Biopsy" = "Oncomine Cancer",
                                                            "Oncomine Focus Assay" = "Oncomine Cancer",
                                                            "Clarigo NIPT Analys" = "NIPT",
+							   "TruSeq DNA PCR free - WGS - constitutional - family" = "WGS Human",
+							   "TruSeq DNA PCR free - WGS - constitutional - single" = "WGS Human",
+							   "Microbiology WGS Nextera XT" = "WGS Micro",
                                                            "AmpliSeq CF"="Övriga"),
                                    warn_missing = F)
 
@@ -152,7 +155,7 @@ sampleData[grep("BRCA",sampleData$Workflow),"Workflow"]<-"BRCA"
 sampleData[grep("Liquid Biopsy",sampleData$Workflow),"Workflow"]<-"Oncomine Liquid Biopsy"
 
 
-
+sampleData<-sampleData[!(sampleData$Analysis =="Myeloisk Panel - Parad" & sampleData$Tissue =="Benmärg") ,]
 
 #
 # TATDATA
@@ -262,6 +265,7 @@ ggsave("tat.png",w=8,h=9)
 
 sampleData.cmd<-sampleData[sampleData$Department == "Klinisk Genetik" | 
                              sampleData$Department == "Klinisk Patologi" |
+                             sampleData$Department == "Klinisk Mikrobiologi" |
                              sampleData$Department == "Sahlgrenska Klinisk Genetik" |
                              sampleData$Department == "CMD - Diana Karpman" |
                              sampleData$Department == "Klinisk immunologi och transfusionsmedicin" ,
@@ -270,8 +274,10 @@ sampleData.cmd<-sampleData[sampleData$Department == "Klinisk Genetik" |
 workflow_month<-reshape::melt(table(sampleData.cmd$Month2,sampleData.cmd$Workflow))
 workflow_month$Var.1<-substr(workflow_month$Var.1,3,12)
 
+#g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercept=c(50,100,150,200,250,300,350,400,450,500,550), linetype="dotted")+geom_bar(stat="identity")+
+#  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")
 g1<-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Var.2))+ geom_hline(yintercept=c(50,100,150,200,250,300,350,400,450,500,550), linetype="dotted")+geom_bar(stat="identity")+
-  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")
+  scale_fill_tableau()+theme(legend.title=element_blank(),legend.position = "top")+xlab("")+ylab("Inkomna prover")
 
 g1
 
@@ -297,10 +303,10 @@ workflow_month[workflow_month$Var.2=="Oncomine Cancer","Var.2"]<-"AmpliSeq Cance
 workflow_month<-workflow_month[workflow_month$Var.2 == "AmpliSeq Cancer" | workflow_month$Var.2 == "Myeloisk Panel" | workflow_month$Var.2 == "NIPT" | workflow_month$Var.2 == "Exom",]
 
 
-labels <- workflow_month$Var.1
+labels <- substr(workflow_month$Var.1,4,5)
 labels[seq(0,length(labels),by=2)]<-""
 
-ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2,nrow = 1)+
+ggplot(workflow_month,aes(x=Var.1,y=value,fill=Year,group=Year))+facet_wrap(~Var.2,nrow = 1)+theme(axis.text=element_blank())+
   geom_bar(stat="identity")+  scale_fill_manual(values = colorPal)+theme(legend.title=element_blank(),legend.position = "top")+
   xlab("")+ylab("Inkomna prover")+scale_color_manual(values = colorPal[c(1,3,5,7)])
 
